@@ -115,7 +115,11 @@ export default function Page() {
             } ${
               currentBox === box.id ? "ring-2 ring-offset-2 ring-black" : ""
             }`}
-            style={{ left: `${box.x}px`, top: `${box.y}px` }}
+            style={{
+              left: `${box.x}px`,
+              top: `${box.y}px`,
+              userSelect: "none",
+            }}
             onClick={() => handleBoxClick(box.id)}
           >
             {box.id}
@@ -137,10 +141,18 @@ export default function Page() {
           </svg>
         )}
       </div>
-      <Button onClick={generateBoxes} className="mt-4">
+      <Button
+        onClick={generateBoxes}
+        className="mt-4"
+        style={{ userSelect: "none" }}
+      >
         Reset
       </Button>
-      <div className="mt-4 text-sm text-gray-600" aria-live="polite">
+      <div
+        className="mt-4 text-sm text-gray-600"
+        aria-live="polite"
+        style={{ userSelect: "none" }}
+      >
         {currentBox === "A" && "Click point A to start tracking"}
         {currentBox === "B" && "Now click point B to finish"}
         {!currentBox && pathData && "Path recorded! Check the console for data"}
