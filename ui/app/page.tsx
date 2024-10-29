@@ -95,7 +95,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gray-100 p-4">
-      <h1 className="text-2xl font-bold mb-4">Enhanced Mouse Path Tracker</h1>
+      <h1 className="text-2xl font-bold mb-4">Mouse Path Tracker</h1>
       <div
         ref={containerRef}
         className="relative w-full h-[calc(100vh-8rem)] bg-white border-2 border-gray-300 rounded-lg overflow-hidden"
