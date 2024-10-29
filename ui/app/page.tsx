@@ -110,7 +110,7 @@ export default function Page() {
         {boxes.map((box) => (
           <div
             key={box.id}
-            className={`absolute w-15 h-15 rounded-full flex items-center justify-center text-white cursor-pointer ${
+            className={`absolute w-6 h-6 rounded-full flex items-center justify-center text-white cursor-pointer ${
               box.id === "A" ? "bg-blue-500" : "bg-green-500"
             } ${
               currentBox === box.id ? "ring-2 ring-offset-2 ring-black" : ""
