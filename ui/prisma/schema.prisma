@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type DataEnd {
+  timestamp BigInt
+  x         Int
+  y         Int
+}
+
+type DataPath {
+  timestamp BigInt
+  x         Int
+  y         Int
+}
+
+type DataStart {
+  timestamp BigInt
+  x         Int
+  y         Int
+}
+
+model data {
+  id    String     @id @default(auto()) @map("_id") @db.ObjectId
+  end   DataEnd
+  path  DataPath[]
+  start DataStart
+}

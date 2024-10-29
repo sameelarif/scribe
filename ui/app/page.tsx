@@ -2,24 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { Button } from "@/components/ui/button"
-
-interface Point {
-  x: number
-  y: number
-  timestamp: number
-}
-
-interface Box {
-  id: string
-  x: number
-  y: number
-}
-
-interface PathData {
-  start: Point
-  end: Point
-  path: Point[]
-}
+import { Box, PathData, Point } from '@/types/path'
+import { addPathData } from '@/actions/db'
 
 export default function Page() {
   const [boxes, setBoxes] = useState<Box[]>([])
@@ -72,6 +56,9 @@ export default function Page() {
         }
         setPathData(newPathData)
         console.log('Path data:', newPathData)
+
+        addPathData(newPathData)
+
         setTimeout(generateBoxes, 100) // Reset after delay
       }
     }
