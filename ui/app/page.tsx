@@ -63,18 +63,16 @@ export default function Page() {
       if (boxId === 'A') {
         setCurrentBox('B')
         setIsTracking(true)
-        setMousePath([{ x: boxes[0].x + 30, y: boxes[0].y + 30, timestamp: Date.now() }])
       } else {
         setIsTracking(false)
-        const endPoint = { x: boxes[1].x + 30, y: boxes[1].y + 30, timestamp: Date.now() }
         const newPathData: PathData = {
           start: mousePath[0],
-          end: endPoint,
-          path: [...mousePath, endPoint],
+          end: mousePath[mousePath.length - 1],
+          path: mousePath,
         }
         setPathData(newPathData)
         console.log('Path data:', newPathData)
-        setTimeout(generateBoxes, 100) // Reset after 2 seconds
+        setTimeout(generateBoxes, 100) // Reset after delay
       }
     }
   }
