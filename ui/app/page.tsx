@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Box, PathData, Point } from "@/types/path";
 import { addPathData } from "@/actions/db";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Page() {
   const [boxes, setBoxes] = useState<Box[]>([]);
@@ -13,6 +14,8 @@ export default function Page() {
   const [pathData, setPathData] = useState<PathData | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -57,7 +60,23 @@ export default function Page() {
       if (boxId === "A") {
         setCurrentBox("B");
         setIsTracking(true);
+
+        timeoutRef.current = setTimeout(() => {
+          setIsTracking(false);
+          setCurrentBox(null);
+
+          toast({
+            title: "Timeout",
+            description:
+              "You must complete the task within 4 seconds. Resetting...",
+            variant: "destructive",
+          });
+
+          setTimeout(generateBoxes, 2000);
+        }, 4000);
       } else {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
         setIsTracking(false);
         const newPathData: PathData = {
           start: mousePath[0],
