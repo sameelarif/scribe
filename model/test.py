@@ -163,7 +163,7 @@ def transform_path_to_endpoints(path, start_point, end_point):
 
 def main():
     # Path to the saved model file
-    MODEL_FILE = 'models/model_final_20241030_154223.pt'  # Replace with your model file path
+    MODEL_FILE = 'models/Model Final 20241031.pt'  # Replace with your model file path
 
     # Initialize the model architecture
     model = CVAE(input_size=2, condition_size=4, hidden_size=128, latent_size=32).to(device)
