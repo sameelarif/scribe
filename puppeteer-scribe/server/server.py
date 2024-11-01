@@ -5,21 +5,16 @@ import torch.nn as nn
 from flask import Flask, request, jsonify
 import json
 import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend suitable for scripts and web servers
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import io
 import base64
+import glob
 
-# Set device (CPU or GPU)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# Define screen dimensions for normalization
-SCREEN_WIDTH = 1920   # Adjust to your screen width if different
-SCREEN_HEIGHT = 1080  # Adjust to your screen height if different
-
-# ====================================
-# 1. Model Definition
-# ====================================
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
 
 class CVAE(nn.Module):
     def __init__(self, input_size=2, condition_size=4, hidden_size=128, latent_size=32):
@@ -66,10 +61,6 @@ class CVAE(nn.Module):
 
         outputs = torch.cat(outputs, dim=1)  # Shape: (batch_size, seq_len, input_size)
         return outputs
-
-# ====================================
-# 2. Inference and Transformation Functions
-# ====================================
 
 def generate_path(model, start_point, end_point, seq_len=50):
     model.eval()
@@ -135,14 +126,18 @@ def transform_path_to_endpoints(path, start_point, end_point):
 
     return transformed_path
 
-# ====================================
-# 3. Flask App Setup
-# ====================================
-
 app = Flask(__name__)
 
-# Load the trained model
-MODEL_FILE = '/Users/sameel/Documents/GitHub/scribe/puppeteer-scribe/model/model-20241031.pt'  # Replace with your model file path
+# Assuming script is being ran from parent directory
+script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+model_dir = os.path.join(script_dir, 'model')
+
+model_files = glob.glob(os.path.join(model_dir, '*.pt'))
+
+if not model_files:
+    raise FileNotFoundError("No model files found in the 'model' directory.")
+
+MODEL_FILE = max(model_files, key=os.path.getmtime)
 
 # Initialize the model architecture
 model = CVAE(input_size=2, condition_size=4, hidden_size=128, latent_size=32).to(device)
@@ -154,25 +149,22 @@ if not os.path.exists(MODEL_FILE):
 model.load_state_dict(torch.load(MODEL_FILE, map_location=device))
 print(f"Model loaded from {MODEL_FILE}")
 
-# ====================================
-# 4. API Endpoint
-# ====================================
-
-@app.route('/generate_path', methods=['POST'])
+@app.route('/generate_path', methods=['GET'])
 def api_generate_path():
-    data = request.get_json()
-    if not data:
-        return jsonify({'error': 'No data provided.'}), 400
+    # Extract start and end points from query parameters
+    start_point = request.args.get('start_point', default=None)  # Expected format: x,y
+    end_point = request.args.get('end_point', default=None)      # Expected format: x,y
+    visualize = request.args.get('visualize', default='false')  # Optional key to generate plot
+
+    if not start_point or not end_point:
+        return jsonify({'error': 'Both start and end points are required.'}), 400
 
     try:
-        # Extract start and end points
-        start_point = data['start_point']  # Expected format: [x, y]
-        end_point = data['end_point']      # Expected format: [x, y]
-        visualize = data.get('visualize', False)  # Optional key to generate plot
+        # Parse start and end points from string to list of floats
+        start_point = list(map(float, start_point.split(',')))
+        end_point = list(map(float, end_point.split(',')))
 
         # Validate input
-        if not (isinstance(start_point, list) and isinstance(end_point, list)):
-            return jsonify({'error': 'Start and end points must be lists of [x, y].'}), 400
         if not (len(start_point) == 2 and len(end_point) == 2):
             return jsonify({'error': 'Start and end points must have two coordinates [x, y].'}), 400
 
@@ -204,7 +196,7 @@ def api_generate_path():
         response_data = {'path': path_list}
 
         # If visualization is requested
-        if visualize:
+        if visualize.lower() == 'true':
             # Generate the plot
             plt.figure(figsize=(6, 6))
 
@@ -252,10 +244,6 @@ def api_generate_path():
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({'error': str(e)}), 500
-
-# ====================================
-# 5. Run the App
-# ====================================
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)
