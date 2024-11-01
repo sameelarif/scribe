@@ -1,5 +1,3 @@
-// test.ts
-
 import puppeteer from "puppeteer";
 import Scribe from "./index";
 
@@ -19,5 +17,9 @@ import Scribe from "./index";
 
   await page.goto("https://www.google.com");
 
-  await scribe.click('div[aria-label="Search by image"]');
+  await scribe.click('textarea[title="Search"]');
+
+  await scribe.type("how long are dolphins in feet");
+
+  await scribe.click('input[aria-label="Google Search"]');
 })();

@@ -151,20 +151,17 @@ print(f"Model loaded from {MODEL_FILE}")
 
 @app.route('/generate_path', methods=['GET'])
 def api_generate_path():
-    # Extract start and end points from query parameters
-    start_point = request.args.get('start_point', default=None)  # Expected format: x,y
-    end_point = request.args.get('end_point', default=None)      # Expected format: x,y
-    visualize = request.args.get('visualize', default='false')  # Optional key to generate plot
+    start_point = request.args.get('start_point', default=None)
+    end_point = request.args.get('end_point', default=None)
+    visualize = request.args.get('visualize', default='false')
 
     if not start_point or not end_point:
         return jsonify({'error': 'Both start and end points are required.'}), 400
 
     try:
-        # Parse start and end points from string to list of floats
         start_point = list(map(float, start_point.split(',')))
         end_point = list(map(float, end_point.split(',')))
 
-        # Validate input
         if not (len(start_point) == 2 and len(end_point) == 2):
             return jsonify({'error': 'Start and end points must have two coordinates [x, y].'}), 400
 

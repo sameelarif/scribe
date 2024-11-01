@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Page } from "puppeteer";
+import { KeyInput, Page } from "puppeteer";
 import { setTimeout } from "timers/promises";
 
 interface Point {
@@ -18,6 +18,11 @@ interface ScribeOptions {
   moveDelay: number;
   apiUrl: string;
   visualize: boolean;
+  startPosition: Point;
+}
+
+interface TypeOptions {
+  wpm?: number;
 }
 
 export default class Scribe {
@@ -31,9 +36,10 @@ export default class Scribe {
     const {
       hesitationDelay = 15,
       clickDelay = 50,
-      moveDelay = 25,
+      moveDelay = 0,
       apiUrl = "http://localhost:3000/generate_path",
       visualize = false,
+      startPosition = { x: 0, y: 0 },
     } = options;
 
     this.options = {
@@ -42,13 +48,14 @@ export default class Scribe {
       moveDelay,
       apiUrl,
       visualize,
+      startPosition,
     };
 
     if (visualize) {
       this.installMouseHelper();
     }
 
-    this.mouse = { x: 0, y: 0 };
+    this.mouse = startPosition;
     this.installMouseTracker();
   }
 
@@ -72,7 +79,8 @@ export default class Scribe {
         throw new Error("Failed to retrieve path from API");
       }
 
-      const path: [number, number][] = response.data.path;
+      const path: [number, number][] = this.interpolatePath(response.data.path);
+
       if (log) {
         console.log("Starting mouse movement along path");
       }
@@ -84,15 +92,24 @@ export default class Scribe {
         );
       }
 
-      for (let i = 1; i < path.length; i++) {
-        await this.page.mouse.move(path[i][0], path[i][1]);
+      for (let i = 0; i < path.length - 1; i++) {
+        const start = path[i];
+        const end = path[i + 1];
+
+        // Calculate distance between points
+        const distance = Math.hypot(end[0] - start[0], end[1] - start[1]);
+        const steps = Math.max(1, Math.floor(distance / 2));
+
+        await this.page.mouse.move(end[0], end[1], { steps });
+
         if (log) {
-          console.log(
-            `Moved mouse to position: (${path[i][0]}, ${path[i][1]})`
-          );
+          console.log(`Moved mouse to position: (${end[0]}, ${end[1]})`);
         }
-        await setTimeout(this.options.moveDelay);
+
+        if (this.options.moveDelay > 0)
+          await setTimeout(this.options.moveDelay);
       }
+
       if (log) {
         console.log("Completed mouse movement along path");
       }
@@ -127,6 +144,63 @@ export default class Scribe {
     await this.page.mouse.down();
     await setTimeout(this.options.clickDelay);
     await this.page.mouse.up();
+  }
+
+  public async type(text: string, options: TypeOptions = {}) {
+    // Set WPM between 60-100 if not provided
+    if (!options.wpm) {
+      options.wpm = 60 + Math.floor(Math.random() * 40);
+    }
+
+    const charactersPerMinute = options.wpm * 5;
+    const delay = 60000 / charactersPerMinute;
+    const dwellTime = delay / 2;
+
+    const deviation = 0.2;
+
+    for (let i = 0; i < text.length; i++) {
+      const c = text.charAt(i) as KeyInput;
+
+      await this.page.keyboard.down(c);
+      await setTimeout(
+        dwellTime + Math.random() * deviation * (Math.random() > 0.5 ? 1 : -1)
+      );
+      await this.page.keyboard.up(c);
+
+      await setTimeout(
+        delay -
+          dwellTime +
+          Math.random() * deviation * (Math.random() > 0.5 ? 1 : -1)
+      );
+    }
+  }
+
+  private interpolatePath(path: [number, number][]): [number, number][] {
+    const interpolatedPath: [number, number][] = [];
+    const totalPoints = path.length;
+
+    for (let i = 0; i < totalPoints - 1; i++) {
+      const [x1, y1] = path[i];
+      const [x2, y2] = path[i + 1];
+
+      interpolatedPath.push([x1, y1]);
+
+      // Determine the number of intermediate points
+      const distance = Math.hypot(x2 - x1, y2 - y1);
+      const numIntermediatePoints = Math.max(1, Math.floor(distance / 10));
+
+      for (let j = 1; j < numIntermediatePoints; j++) {
+        const t = j / numIntermediatePoints;
+        const x = x1 + (x2 - x1) * t;
+        const y = y1 + (y2 - y1) * t;
+        interpolatedPath.push([x, y]);
+      }
+    }
+
+    // Add the last point
+    interpolatedPath.push(path[totalPoints - 1]);
+
+    return interpolatedPath;
   }
 
   private async installMouseHelper(): Promise<void> {
