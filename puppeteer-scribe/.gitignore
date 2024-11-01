@@ -1,0 +1,4 @@
+model
+server/.venv
+.venv
+node_modules

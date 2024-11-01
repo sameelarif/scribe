@@ -1,0 +1,24 @@
+{
+  "name": "puppeteer-scribe",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "ts-node test.ts"
+  },
+  "keywords": [],
+  "author": "sameelarif",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "puppeteer": "^23.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.8.6",
+    "@types/puppeteer": "^5.4.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
