@@ -3,7 +3,7 @@
 Welcome to the **Scribe** repository! This project is designed to provide an end-to-end solution for collecting, training, and simulating human-like mouse movements using Puppeteer. This project aims to simulate realistic mouse movements for browser automation using Puppeteer. It consists of:
 
 1. A **data collection UI** for recording user mouse movements.
-2. A **machine learning model** to train and test on the collected data.
+2. A **machine learning model** to train and test the collected data.
 3. A **Puppeteer plugin** that utilizes the trained model to produce human-like mouse movements.
 
 ## Folder Structure
@@ -36,7 +36,7 @@ The `puppeteer-scribe` folder contains a Puppeteer plugin that integrates a trai
 
 ### Data Collection
 
-If you'd like, you can run the data collection UI to collect your own data or add on to the existing dataset. To start the data collection interface:
+If you'd like, you can run the data collection UI to collect your data or add it to the existing dataset. To start the data collection interface:
 
 ```bash
 cd ui
@@ -46,7 +46,7 @@ npm i
 npm run start
 ```
 
-After starting the web server, open it in your browser and use it to record your own mouse movement data.
+After starting the web server, open it in your browser and use it to record your mouse movement data.
 
 ### Model Training
 
@@ -60,7 +60,7 @@ The model will output to `model/models`, which you can use to power `puppeteer-s
 
 ### Puppeteer Plugin Integration
 
-The `puppeteer-scribe` folder contains an example of how one would integrate the model into a browser environment. The logic can be forked and edited to support playwright, selenium, or any other web automation library.
+The `puppeteer-scribe` folder contains an example of how one would integrate the model into a browser environment. The logic can be forked and edited to support Playwright, selenium, or any other web automation library.
 
 To use the plugin, move your saved model's file into the `model` folder. You don't need to replace previous model versions as the server will automatically pick the most recent file.
 
