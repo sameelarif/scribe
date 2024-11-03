@@ -77,8 +77,8 @@ In another terminal window, you can run the test script:
 ```bash
 # Install dependencies
 npm i
-# Run the test file
-npm test
+# Run the test file from `examples`
+npm test <test-name>
 ```
 
 ## Contributing
