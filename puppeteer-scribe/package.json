@@ -5,7 +5,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "ts-node test.ts"
+    "test": "node -e \"const args = process.argv.slice(1); require('child_process').execSync('ts-node examples/' + args.join(' '), { stdio: 'inherit' });\""
   },
   "keywords": [],
   "author": "sameelarif",

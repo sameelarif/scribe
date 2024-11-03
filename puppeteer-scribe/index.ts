@@ -19,6 +19,7 @@ interface ScribeOptions {
   apiUrl: string;
   visualize: boolean;
   startPosition: Point;
+  wpm: number;
 }
 
 interface TypeOptions {
@@ -40,6 +41,7 @@ export default class Scribe {
       apiUrl = "http://localhost:3000/generate_path",
       visualize = false,
       startPosition = { x: 0, y: 0 },
+      wpm = 80,
     } = options;
 
     this.options = {
@@ -49,6 +51,7 @@ export default class Scribe {
       apiUrl,
       visualize,
       startPosition,
+      wpm,
     };
 
     if (visualize) {
@@ -146,13 +149,11 @@ export default class Scribe {
     await this.page.mouse.up();
   }
 
-  public async type(text: string, options: TypeOptions = {}) {
-    // Set WPM between 60-100 if not provided
-    if (!options.wpm) {
-      options.wpm = 60 + Math.floor(Math.random() * 40);
-    }
-
-    const charactersPerMinute = options.wpm * 5;
+  public async type(
+    text: string,
+    options: TypeOptions = { wpm: this.options.wpm }
+  ) {
+    const charactersPerMinute = this.options.wpm * 5;
     const delay = 60000 / charactersPerMinute;
     const dwellTime = delay / 2;
 

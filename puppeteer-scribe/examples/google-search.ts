@@ -1,5 +1,5 @@
 import puppeteer from "puppeteer";
-import Scribe from "./index";
+import Scribe from "../index";
 
 (async () => {
   const browser = await puppeteer.launch({
