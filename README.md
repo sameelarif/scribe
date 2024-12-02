@@ -36,7 +36,9 @@ The `puppeteer-scribe` folder contains a Puppeteer plugin that integrates a trai
 
 ### Data Collection
 
-If you'd like, you can run the data collection UI to collect your data or add it to the existing dataset. To start the data collection interface:
+The data I personally collected can be downloaded from Kaggle: https://www.kaggle.com/datasets/sameelarif/mouse-movement-between-ui-elements.
+
+If you'd like, you can run the data collection UI to collect your own data or add it to the existing dataset. To start the data collection interface:
 
 ```bash
 cd ui
