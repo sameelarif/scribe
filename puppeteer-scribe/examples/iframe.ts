@@ -35,7 +35,7 @@ import Scribe from "../index";
 
   if (hcaptchaFrame) {
     await hcaptchaFrame.waitForSelector("#checkbox");
-    await scribe.click("#checkbox", hcaptchaFrame);
+    await scribe.click("#checkbox", { frame: hcaptchaFrame });
   } else {
     throw new Error("hcaptchaFrame is undefined");
   }
