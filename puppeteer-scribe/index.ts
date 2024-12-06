@@ -1,5 +1,5 @@
 import axios from "axios";
-import { KeyInput, Page } from "puppeteer";
+import { Frame, KeyInput, Page } from "puppeteer";
 import { setTimeout } from "timers/promises";
 
 interface Point {
@@ -122,8 +122,9 @@ export default class Scribe {
     }
   }
 
-  public async click(selector: string): Promise<void> {
-    const targetEl = await this.page.$(selector);
+  public async click(selector: string, frame?: Frame): Promise<void> {
+    const context = frame || this.page;
+    const targetEl = await context.$(selector);
 
     if (!targetEl) {
       throw new Error(`Unable to locate element for selector: \`${selector}\``);
