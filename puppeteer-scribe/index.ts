@@ -26,6 +26,10 @@ interface TypeOptions {
   wpm?: number;
 }
 
+interface ClickOptions {
+  frame?: Frame;
+}
+
 export default class Scribe {
   page: Page;
   options: ScribeOptions;
@@ -122,7 +126,11 @@ export default class Scribe {
     }
   }
 
-  public async click(selector: string, frame?: Frame): Promise<void> {
+  public async click(
+    selector: string,
+    options: ClickOptions = {}
+  ): Promise<void> {
+    const { frame } = options;
     const context = frame || this.page;
     const targetEl = await context.$(selector);
 
