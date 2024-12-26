@@ -1,6 +1,6 @@
-# Scribe
-
-![Scribe Banner](assets/banner.png)
+<p align="center">
+  <img src="assets/banner.png" alt="Scribe Banner">
+</p>
 
 Welcome to the **Scribe** repository! This project provides an end-to-end solution for collecting, training, and simulating human-like mouse movements in the browser. It consists of:
 
