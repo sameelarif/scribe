@@ -1,6 +1,8 @@
 # Scribe
 
-Welcome to the **Scribe** repository! This project is designed to provide an end-to-end solution for collecting, training, and simulating human-like mouse movements using Puppeteer. This project aims to simulate realistic mouse movements for browser automation using Puppeteer. It consists of:
+![Scribe Banner](assets/banner.png)
+
+Welcome to the **Scribe** repository! This project provides an end-to-end solution for collecting, training, and simulating human-like mouse movements in the browser. It consists of:
 
 1. A **data collection UI** for recording user mouse movements.
 2. A **machine learning model** to train and test the collected data.
